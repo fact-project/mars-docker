@@ -1,6 +1,6 @@
-FROM ubuntu:14.0
+FROM ubuntu:14.04
 MAINTAINER FACT People <kai.bruegge@tu-dortmund.de>
 
-RUN apt-get update && apt-get install htop iotop
-RUN apt-get install build-essential
+RUN apt-get update && apt-get install -y  htop iotop
+RUN apt-get install -y build-essential
 
