@@ -1,0 +1,58 @@
+#############################################################################
+#                                                                           #
+# This is the path where root seraches for macros                           #
+# to execute (eg. .x merpp.C)                                               #
+#                                                                           #
+#############################################################################
+
+Unix.*.Root.MacroPath:       .:/home/mars/Mars/macros
+
+#############################################################################
+#                                                                           #
+# This is the path where the dynamic loader (eg. gSystem->Load("mars.so")   #
+# is searching for the shared objects                                       #
+#                                                                           #
+#############################################################################
+
+Unix.*.Root.DynamicPath:      .:/home/mars/Mars/
+
+#############################################################################
+#                                                                           #
+# This is the name of the logon macro (executed at root startup) and the    #
+# logoff macro (executed when quiting root)                                 #
+#                                                                           #
+#############################################################################
+
+#Rint.Logon:                  rootlogon.C
+#Rint.Logoff:                 rootlogoff.C
+
+#############################################################################
+#                                                                           #
+# This is used if you want to use the root documentation facility to        #
+# create the documentation of the code out of the code                      #
+#                                                                           #
+#############################################################################
+
+Root.Html.DescriptionStyle:  Doc++
+
+Root.Html.Author:            !   Author(s):
+Root.Html.Copyright:         !   Copyright
+Root.Html.Modified:          !   Modified:
+Root.Html.Description        // ----
+
+Root.Html.Root:              http://root.cern.ch/root/htmldoc/
+
+
+#############################################################################
+#                                                                           #
+# Some default changes                                                      #
+#                                                                           #
+#############################################################################
+
+#Canvas.HighLightColor:  3
+#Canvas.MoveOpaque:      0
+#Canvas.ResizeOpaque:    0
+Canvas.ShowEventStatus: Yes
+Canvas.ShowToolBar:     Yes
+Canvas.ShowEditor:      Yes
+#Canvas.AutoExec:        No
