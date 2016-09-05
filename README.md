@@ -1,2 +1,10 @@
-# mars_docker_image
-A docker image for working with MARS and maybe FACT++
+# mars-docker
+
+A docker image for MARS
+
+After cloning this repo you can do
+
+```
+$ docker build -t mars .
+$ docker run -it mars bash
+```
