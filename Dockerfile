@@ -8,7 +8,7 @@ RUN apt-get install -y gfortran libssl-dev libpcre3-dev xlibmesa-glu-dev libglew
 libmysqlclient-dev libfftw3-dev cfitsio-dev \
 graphviz-dev libavahi-compat-libdnssd-dev \
 libldap2-dev python-dev libxml2-dev libkrb5-dev \
-libgsl0-dev libqt4-dev
+libgsl0-dev libqt4-dev cmake
 
 RUN useradd mars
 RUN mkdir /home/mars && chown -R mars: /home/mars && cd /home/mars
@@ -17,7 +17,11 @@ ENV HOME /home/mars
 RUN wget https://root.cern.ch/download/root_v5.34.36.source.tar.gz
 RUN tar zxvf root_v5.34.36.source.tar.gz 
  
-RUN cd root && ./configure linuxx8664gcc  --all && make -j 8
-#RUN /bin/bash -c 'source bin/thisroot.sh' 
+RUN mkdir build_root &&cd build_root  && cmake ../root  && cmake --build . -- -j14 && cmake --build . --target install
+#RUN cmake -DCMAKE_INSTALL_PREFIX=/opt/root -P cmake_install.cmake
+#ENV PATH /opt/root/bin:/opt/:$PATH
+#RUN make install
 RUN cd /home/mars
-RUN source root/bin/thisroot.sh
+RUN apt-get install -y subversion libnova-dev
+RUN svn checkout -r 18549 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive
+RUN cd Mars && sed -i.bak '/#define sqrt ::sqrt/d' ./mbase/MQuaternion.h && sed -i.bak '/#undef sqrt/d' ./mbase/MQuaternion.h && make -j 4 && cp libmars.so /usr/lib
