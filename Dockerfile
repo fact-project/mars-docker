@@ -11,7 +11,7 @@ RUN apt-get update \
 	libmysqlclient-dev libfftw3-dev cfitsio-dev \
 	graphviz-dev libavahi-compat-libdnssd-dev \
 	libldap2-dev python-dev libxml2-dev libkrb5-dev \
-	libgsl0-dev libqt4-dev cmake subversion libnova-dev
+	libgsl0-dev libqt4-dev cmake subversion libnova-dev vim
 
 RUN useradd -m mars
 
@@ -30,10 +30,11 @@ RUN mkdir build_root \
 
 RUN svn checkout -r 18549 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive
 
+ADD fix_sqrt_defs.patch /home/mars/
+
 RUN cd Mars \
 	&& make mrproper \
-	&& sed -i.bak '/#define sqrt ::sqrt/d' ./mbase/MQuaternion.h \
-	&& sed -i.bak '/#undef sqrt/d' ./mbase/MQuaternion.h \
+	&& patch -p0 -i /home/mars/fix_sqrt_defs.patch \
 	&& make -j$CORES  \
 	&& cp libmars.so /usr/lib
 
