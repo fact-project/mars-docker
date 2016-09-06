@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 MAINTAINER FACT People <kai.bruegge@tu-dortmund.de>
 
 ARG CORES=1
@@ -8,7 +8,7 @@ RUN apt-get update \
 	libx11-dev libxpm-dev libxft-dev libxext-dev htop \
 	build-essential curl gfortran libssl-dev libpcre3-dev \
 	xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
-	libmysqlclient-dev libfftw3-dev cfitsio-dev \
+	libmysqlclient-dev libfftw3-dev libcfitsio-dev \
 	graphviz-dev libavahi-compat-libdnssd-dev \
 	libldap2-dev python-dev libxml2-dev libkrb5-dev \
 	libgsl0-dev libqt4-dev cmake subversion libnova-dev vim
@@ -30,11 +30,13 @@ RUN mkdir build_root \
 
 RUN svn checkout -r 18549 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive
 
-ADD fix_sqrt_defs.patch /home/mars/
+ADD fix_bool_return_values.patch fix_sqrt_defs.patch fix_MWriteFitsFile.patch /home/mars/
 
 RUN cd Mars \
+	&& patch -p0 -i ../fix_bool_return_values.patch \
+	&& patch -p0 -i ../fix_sqrt_defs.patch \
+	&& patch -p0 -i ../fix_MWriteFitsFile.patch \
 	&& make mrproper \
-	&& patch -p0 -i /home/mars/fix_sqrt_defs.patch \
 	&& make -j$CORES  \
 	&& cp libmars.so /usr/lib
 

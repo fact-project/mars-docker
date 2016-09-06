@@ -1,0 +1,38 @@
+Index: mfileio/MWriteFitsFile.h
+===================================================================
+--- mfileio/MWriteFitsFile.h	(revision 18549)
++++ mfileio/MWriteFitsFile.h	(working copy)
+@@ -1,5 +1,5 @@
+-#ifndef MARS_MWreitFitsFile
+-#define MARS_MWreitFitsFile
++#ifndef MARS_MWriteFitsFile
++#define MARS_MWriteFitsFile
+ 
+ #include <list>
+ #include <vector>
+@@ -151,6 +151,7 @@
+ 
+    void        SetupHeaderKeys(MRawRunHeader &header);
+ 
++public:
+    //Header keys related stuff
+    template<typename _T>
+    std::string GetFitsString(const _T& value)
+@@ -183,7 +184,6 @@
+        return returnVal.str();
+    }
+ 
+-public:
+    template<typename _T>
+    bool SetHeaderKey(const std::string& key,
+                      const _T& value,
+@@ -270,7 +270,7 @@
+ };
+ //Specializations for float and doubles (because of the precision handling, I could not deal with it in the main function
+ template<>
+-std::string MWriteFitsFile::GetFitsString(const double& value);
++inline std::string MWriteFitsFile::GetFitsString(const double& value);
+ template<>
+-std::string MWriteFitsFile::GetFitsString(const float& value);
++inline std::string MWriteFitsFile::GetFitsString(const float& value);
+ #endif

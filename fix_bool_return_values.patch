@@ -1,0 +1,26 @@
+Index: mbase/MTime.cc
+===================================================================
+--- mbase/MTime.cc	(revision 18549)
++++ mbase/MTime.cc	(working copy)
+@@ -1151,7 +1151,7 @@
+ Bool_t MTime::AsciiWrite(ostream &out) const
+ {
+     out << *this;
+-    return out;
++    return (Bool_t) out;
+ }
+ 
+ // --------------------------------------------------------------------------
+Index: mfileio/MReadFiles.cc
+===================================================================
+--- mfileio/MReadFiles.cc	(revision 18549)
++++ mfileio/MReadFiles.cc	(working copy)
+@@ -156,7 +156,7 @@
+     fNumLine=0;
+ 
+     // return stream status
+-    return *fIn;
++    return (Bool_t) *fIn;
+ }
+ 
+ // --------------------------------------------------------------------------
