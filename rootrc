@@ -5,7 +5,7 @@
 #                                                                           #
 #############################################################################
 
-Unix.*.Root.MacroPath:       .:/home/mars/Mars/macros
+Unix.*.Root.MacroPath:       .:/home/mars/Mars/macros:/home/mars/Mars/fact
 
 #############################################################################
 #                                                                           #
