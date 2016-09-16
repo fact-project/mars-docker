@@ -1,0 +1,125 @@
+
+Index: mbase/MQuaternion.h
+===================================================================
+--- mbase/MQuaternion.h (revision 18583)
++++ mbase/MQuaternion.h (working copy)
+@@ -8,7 +8,9 @@
+ 
+ #ifndef ROOT_TQuaternion
+ #include <math.h>
++#if (__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 8))
+ #define sqrt ::sqrt
++#endif
+ #include <TQuaternion.h>
+ #undef sqrt
+ #endif
+Index: mbase/MTime.cc
+===================================================================
+--- mbase/MTime.cc      (revision 18583)
++++ mbase/MTime.cc      (working copy)
+@@ -1151,7 +1151,7 @@
+ Bool_t MTime::AsciiWrite(ostream &out) const
+ {
+     out << *this;
+-    return out;
++    return bool(out);
+ }
+ 
+ // --------------------------------------------------------------------------
+Index: mcore/fits.h
+===================================================================
+--- mcore/fits.h        (revision 18583)
++++ mcore/fits.h        (working copy)
+@@ -490,6 +490,11 @@
+         gLog << ___err___ << "ERROR - " << txt << std::endl;
+     }
+ 
++    // Public for the root dictionary
++    typedef std::pair<void*, Table::Column> Address;
++    typedef std::vector<Address> Addresses;
++    typedef std::unordered_map<std::string, void*> Pointers;
++
+ protected:
+     std::ofstream fCopy;
+     std::vector<std::string> fListOfTables; // List of skipped tables. Last table is open table
+@@ -496,12 +501,9 @@
+ 
+     Table fTable;
+ 
+-    typedef std::pair<void*, Table::Column> Address;
+-    typedef std::vector<Address> Addresses;
+     //map<void*, Table::Column> fAddresses;
+     Addresses fAddresses;
+ 
+-    typedef std::unordered_map<std::string, void*> Pointers;
+     Pointers fPointers;
+ 
+     std::vector<std::vector<char>> fGarbage;
+Index: mcore/zofits.h
+===================================================================
+--- mcore/zofits.h      (revision 18583)
++++ mcore/zofits.h      (working copy)
+@@ -987,6 +987,8 @@
+ 
+         // data layout related stuff
+         /// Regular columns augmented with compression informations
++
++    public: // Public for the root dictionary
+         struct CompressedColumn
+         {
+             CompressedColumn(const Table::Column& c, const FITS::Compression& h) : col(c),
+@@ -998,6 +1000,8 @@
+             Table::Column col;             ///< the regular column entry
+             FITS::Compression block_head;  ///< the compression data associated with that column
+         };
++
++    protected:
+         std::vector<CompressedColumn> fRealColumns;     ///< Vector hosting the columns of the file
+         uint32_t                      fRealRowWidth;    ///< Width in bytes of one uncompressed row
+         std::shared_ptr<char>         fSmartBuffer;     ///< Smart pointer to the buffer where the incoming rows are written
+Index: mfileio/MReadFiles.cc
+===================================================================
+--- mfileio/MReadFiles.cc       (revision 18583)
++++ mfileio/MReadFiles.cc       (working copy)
+@@ -156,7 +156,7 @@
+     fNumLine=0;
+ 
+     // return stream status
+-    return *fIn;
++    return bool(*fIn);
+ }
+ 
+ // --------------------------------------------------------------------------
+Index: mfileio/MWriteFitsFile.h
+===================================================================
+--- mfileio/MWriteFitsFile.h    (revision 18583)
++++ mfileio/MWriteFitsFile.h    (working copy)
+@@ -151,6 +151,7 @@
+ 
+    void        SetupHeaderKeys(MRawRunHeader &header);
+ 
++public:
+    //Header keys related stuff
+    template<typename _T>
+    std::string GetFitsString(const _T& value)
+@@ -183,7 +184,6 @@
+        return returnVal.str();
+    }
+ 
+-public:
+    template<typename _T>
+    bool SetHeaderKey(const std::string& key,
+                      const _T& value,
+Index: mraw/MRawRunHeader.cc
+===================================================================
+--- mraw/MRawRunHeader.cc       (revision 18583)
++++ mraw/MRawRunHeader.cc       (working copy)
+@@ -545,7 +545,7 @@
+ //
+ Bool_t MRawRunHeader::FixAssignment()
+ {
+-    if (!fTelescopeNumber==1)
++    if (fTelescopeNumber!=1)
+         return kTRUE;
+ 
+     if (fRunNumber>=53300 && fRunNumber<=68754)

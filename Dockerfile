@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 MAINTAINER FACT People <kai.bruegge@tu-dortmund.de>
 
-ARG CORES=1
+ARG CORES=4
 
 RUN apt-get update \
 	&& apt-get install -y  git dpkg-dev make g++ gcc binutils \
@@ -30,12 +30,10 @@ RUN mkdir build_root \
 
 RUN svn checkout -r 18549 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive
 
-ADD fix_bool_return_values.patch fix_sqrt_defs.patch fix_MWriteFitsFile.patch /home/mars/
+ADD fix_mars.patch /home/mars/
 
 RUN cd Mars \
-	&& patch -p0 -i ../fix_bool_return_values.patch \
-	&& patch -p0 -i ../fix_sqrt_defs.patch \
-	&& patch -p0 -i ../fix_MWriteFitsFile.patch \
+	&& patch -p0 -i ../fix_mars.patch \
 	&& make mrproper \
 	&& make -j$CORES  \
 	&& cp libmars.so /usr/lib
