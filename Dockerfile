@@ -28,12 +28,10 @@ RUN mkdir build_root \
 	&& cd /home/mars \
 	&& rm -rf /home/mars/build_root
 
-RUN svn checkout -r 18549 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive
+RUN svn checkout -r 18597 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive
 
-ADD fix_mars.patch /home/mars/
 
 RUN cd Mars \
-	&& patch -p0 -i ../fix_mars.patch \
 	&& make mrproper \
 	&& make -j$CORES  \
 	&& cp libmars.so /usr/lib
