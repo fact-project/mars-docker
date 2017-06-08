@@ -1,0 +1,20 @@
+diff --git a/bindings/pyroot/src/Utility.cxx b/bindings/pyroot/src/Utility.cxx
+index a9b574e..8dcaa0d 100644
+--- a/bindings/pyroot/src/Utility.cxx
++++ b/bindings/pyroot/src/Utility.cxx
+@@ -211,11 +211,14 @@ Bool_t PyROOT::Utility::AddToClass(
+    Py_DECREF( method );
+    Py_DECREF( func );
+ 
+-   if ( PyErr_Occurred() )
++   if ( PyErr_Occurred() ) {
++      PyErr_Clear();
+       return kFALSE;
++   }
+ 
+    if ( ! isOk ) {
+       PyErr_Format( PyExc_TypeError, "could not add method %s", label );
++      PyErr_Clear();
+       return kFALSE;
+    }
+
