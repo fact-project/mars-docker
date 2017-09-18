@@ -28,6 +28,7 @@ $ docker run -v /fact/raw:/fact/raw -v /gpfs1/scratch:/output --rm -i -t mars
 
 ## Install on your host
 
+First install the mandatory and optional dependencies of root
 
     sudo apt-get update \
         && apt-get install -y  git dpkg-dev make g++ gcc binutils \
@@ -40,40 +41,45 @@ $ docker run -v /fact/raw:/fact/raw -v /gpfs1/scratch:/output --rm -i -t mars
         libgsl0-dev libqt4-dev cmake subversion libnova-dev vim
 
 
+Then download and install anaconda:
+
     curl -O -L https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh
-    bash Anaconda3-4.4.0-Linux-x86_64.sh -p $HOME/anaconda36 -b
+    bash Anaconda3-4.4.0-Linux-x86_64.sh -p $HOME/.local/anaconda3 -b
     rm Anaconda3-4.4.0-Linux-x86_64.sh
 
 
-    git clone https://github.com/root-mirror/root \
-            --branch=v5-34-00-patches \
-            --depth=1 \
+Download and unpack the root source of the v5-34-00-patches branch:
+    
+    cd $HOME/.local
+    curl -L  https://github.com/root-project/root/archive/v5-34-00-patches.tar.gz | tar xz
 
-    git clone https://github.com/fact-project/mars-docker.git
+Download the patch for root from this repo and apply it
+    
+    curl -L -O https://raw.githubusercontent.com/fact-project/mars-docker/master/root5-python3.patch
 
-    cd root
-    patch -p1 < ../mars-docker/root5-python3.patch
+    cd root-5-34-00-patches
+    patch -p1 < ../root5-python3.patch
     cd ..
-    rm -rf mars-docker
 
-    mkdir build_root
-    cd build_root
+Create the root build directory, run cmake and build the project
+
+    mkdir root-5-34-anaconda3
+    cd root-5-34-anaconda3
     cmake \
         -D builtin_zlib=ON \
         -D mathmore=ON \
         -D minuit2=ON \
-        -D PYTHON_EXECUTABLE=$HOME/anaconda36/bin/python \
-        -D PYTHON_INCLUDE_DIR=$HOME/anaconda36/include/python3.6m \
-        -D PYTHON_LIBRARY=$HOME/anaconda36/lib/libpython3.6m.so \
-        ../root
+        -D CMAKE_EXE_LINKER_FLAGS="-Wl,-rpath,$HOME/.local/anaconda3/lib" \
+        -D PYTHON_EXECUTABLE=$HOME/.local/anaconda3/bin/python \
+        -D PYTHON_INCLUDE_DIR=$HOME/.local/anaconda3/include/python3.6m \
+        -D PYTHON_LIBRARY=$HOME/.local/anaconda3/lib/libpython3.6m.so \
+        ../root-5-34-00-patches
 
-    cmake --build . -- -j7
+    cmake --build . -- -j<number of cores your machine has>
 
 
-    export PATH="$HOME/anaconda36/bin:$PATH"
-    conda install libgcc=5
-    conda clean --all --yes
-
+Download and install MARS
+ 
     svn checkout -r 18868 \
         https://trac.fact-project.org/svn/trunk/Mars \
         --trust-server-cert \
