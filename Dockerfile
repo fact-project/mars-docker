@@ -22,10 +22,11 @@ ADD root5-python3.patch /home/mars
 RUN curl -O -L https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh \
 	&& bash Anaconda3-4.4.0-Linux-x86_64.sh -p /home/mars/anaconda3 -b \
 	&& rm  Anaconda3-4.4.0-Linux-x86_64.sh \
+	&& /home/mars/anaconda3/bin/conda install libgcc=5 \
 	&& /home/mars/anaconda3/bin/conda clean --all --yes
 
 
-RUN curl -L clone https://github.com/root-project/root/archive/v5-34-00-patches.tar.gz | tar xz \
+RUN curl -L https://github.com/root-project/root/archive/v5-34-00-patches.tar.gz | tar xz \
 	&& cd root-5-34-00-patches \
 	&& patch -p1 < /home/mars/root5-python3.patch \
 	&& cd .. \
@@ -35,7 +36,6 @@ RUN curl -L clone https://github.com/root-project/root/archive/v5-34-00-patches.
 		-D builtin_zlib=ON \
 		-D mathmore=ON \
   		-D minuit2=ON \
-		-D CMAKE_EXE_LINKER_FLAGS="-Wl,-rpath,/home/mars/anaconda3/lib" \
   		-D PYTHON_EXECUTABLE=/home/mars/anaconda3/bin/python \
   		-D PYTHON_INCLUDE_DIR=/home/mars/anaconda3/include/python3.6m \
   		-D PYTHON_LIBRARY=/home/mars/anaconda3/lib/libpython3.6m.so \
@@ -53,9 +53,10 @@ RUN svn checkout -r 18907 https://trac.fact-project.org/svn/trunk/Mars --trust-s
 	&& make -j$CORES  \
 	&& cp libmars.so /usr/lib
 
+ENV PATH=/home/mars/anaconda3/bin:$PATH
+
 ADD rootrc  /home/mars/.rootrc
 RUN chown mars:mars /home/mars/.rootrc 
-ENV PATH=/home/mars/anaconda3/bin:$PATH
 
 WORKDIR /home/mars/Mars
 CMD bash
