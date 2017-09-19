@@ -26,7 +26,7 @@ E.g.:
 $ docker run -v /fact/raw:/fact/raw -v /gpfs1/scratch:/output --rm -i -t mars
 ```
 
-## Install on your host
+## Install on your host, this is tested on Ubuntu 16.04 and 17.04
 
 First install the mandatory and optional dependencies of root
 
@@ -45,6 +45,7 @@ Then download and install anaconda:
 
     curl -O -L https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh
     bash Anaconda3-4.4.0-Linux-x86_64.sh -p $HOME/.local/anaconda3 -b
+    $HOME/.local/anaconda3/bin/conda install libgcc=5
     rm Anaconda3-4.4.0-Linux-x86_64.sh
 
 
@@ -61,6 +62,12 @@ Download the patch for root from this repo and apply it
     patch -p1 < ../root5-python3.patch
     cd ..
 
+Make sure, that anaconda is **not** on your `PATH`, as this will result in linking
+against the wrong libraries during the ROOT build. E.g. by doing
+
+    export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+
 Create the root build directory, run cmake and build the project
 
     mkdir root-5-34-anaconda3
@@ -69,7 +76,6 @@ Create the root build directory, run cmake and build the project
         -D builtin_zlib=ON \
         -D mathmore=ON \
         -D minuit2=ON \
-        -D CMAKE_EXE_LINKER_FLAGS="-Wl,-rpath,$HOME/.local/anaconda3/lib" \
         -D PYTHON_EXECUTABLE=$HOME/.local/anaconda3/bin/python \
         -D PYTHON_INCLUDE_DIR=$HOME/.local/anaconda3/include/python3.6m \
         -D PYTHON_LIBRARY=$HOME/.local/anaconda3/lib/libpython3.6m.so \
