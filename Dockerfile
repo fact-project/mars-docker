@@ -17,8 +17,6 @@ RUN useradd -m mars
 
 WORKDIR /home/mars
 
-ADD root5-python3.patch /home/mars
-
 RUN curl -O -L https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh \
 	&& bash Anaconda3-4.4.0-Linux-x86_64.sh -p /home/mars/anaconda3 -b \
 	&& rm  Anaconda3-4.4.0-Linux-x86_64.sh \
@@ -27,9 +25,6 @@ RUN curl -O -L https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh
 
 
 RUN curl -L https://github.com/root-project/root/archive/v5-34-00-patches.tar.gz | tar xz \
-	&& cd root-5-34-00-patches \
-	&& patch -p1 < /home/mars/root5-python3.patch \
-	&& cd .. \
         && mkdir build_root \
 	&& cd build_root \
 	&& cmake \

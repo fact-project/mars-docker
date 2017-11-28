@@ -54,14 +54,6 @@ Download and unpack the root source of the v5-34-00-patches branch:
     cd $HOME/.local
     curl -L  https://github.com/root-project/root/archive/v5-34-00-patches.tar.gz | tar xz
 
-Download the patch for root from this repo and apply it
-    
-    curl -L -O https://raw.githubusercontent.com/fact-project/mars-docker/master/root5-python3.patch
-
-    cd root-5-34-00-patches
-    patch -p1 < ../root5-python3.patch
-    cd ..
-
 Make sure, that anaconda is **not** on your `PATH`, as this will result in linking
 against the wrong libraries during the ROOT build. E.g. by doing
 
