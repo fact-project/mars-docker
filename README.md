@@ -30,8 +30,8 @@ $ docker run -v /fact/raw:/fact/raw -v /gpfs1/scratch:/output --rm -i -t mars
 
 First install the mandatory and optional dependencies of root
 
-    sudo apt-get update \
-        && apt-get install -y  git dpkg-dev make g++ gcc binutils \
+    sudo apt-get update
+    sudo apt-get install -y  git dpkg-dev make g++ gcc binutils \
         libx11-dev libxpm-dev libxft-dev libxext-dev htop \
         build-essential curl gfortran libssl-dev libpcre3-dev \
         xlibmesa-glu-dev libglew1.5-dev libftgl-dev \
