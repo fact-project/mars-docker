@@ -74,11 +74,13 @@ Create the root build directory, run cmake and build the project
         ../root-5-34-00-patches
 
     cmake --build . -- -j<number of cores your machine has>
+    source bin/thisroot.sh
 
 
 Download and install MARS
- 
-    svn checkout -r 18868 \
+    
+    cd ..
+    svn checkout \
         https://trac.fact-project.org/svn/trunk/Mars \
         --trust-server-cert \
         --non-interactive
