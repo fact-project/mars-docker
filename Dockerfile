@@ -17,15 +17,14 @@ RUN useradd -m mars
 
 WORKDIR /home/mars
 
-RUN curl -O -L https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh \
-	&& bash Anaconda3-4.4.0-Linux-x86_64.sh -p /home/mars/anaconda3 -b \
-	&& rm  Anaconda3-4.4.0-Linux-x86_64.sh \
-	&& /home/mars/anaconda3/bin/conda install libgcc=5 \
+RUN curl -O -L https://repo.anaconda.com/archive/Anaconda3-5.2.0-Linux-x86_64.sh \
+	&& bash Anaconda3-5.2.0-Linux-x86_64.sh -p /home/mars/anaconda3 -b \
+	&& rm  Anaconda3-5.2.0-Linux-x86_64.sh \
 	&& /home/mars/anaconda3/bin/conda clean --all --yes
 
 
 RUN curl -L https://github.com/root-project/root/archive/v5-34-00-patches.tar.gz | tar xz \
-        && mkdir build_root \
+    && mkdir build_root \
 	&& cd build_root \
 	&& cmake \
 		-D builtin_zlib=ON \
@@ -42,7 +41,7 @@ RUN curl -L https://github.com/root-project/root/archive/v5-34-00-patches.tar.gz
 	&& rm -rf /home/mars/build_root \
 	&& rm -rf /home/mars/root-5-34-00-patches
 
-RUN svn checkout -r 18907 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive \
+RUN svn checkout -r 19227 https://trac.fact-project.org/svn/trunk/Mars --trust-server-cert --non-interactive \
 	&& cd Mars \
 	&& make mrproper \
 	&& make -j$CORES  \
