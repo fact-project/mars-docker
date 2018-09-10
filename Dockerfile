@@ -50,7 +50,9 @@ RUN svn checkout -r 19227 https://trac.fact-project.org/svn/trunk/Mars --trust-s
 ENV PATH=/home/mars/anaconda3/bin:$PATH
 
 ADD rootrc  /home/mars/.rootrc
-RUN chown mars:mars /home/mars/.rootrc 
+RUN chown mars:mars /home/mars/.rootrc \
+	&& echo ". thisroot.sh" >> /home/mars/.bashrc 
 
+USER mars
 WORKDIR /home/mars/Mars
 CMD bash
